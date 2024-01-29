@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "outDir": "resources/js",
+        "strict": true
+    },
+    "include": [
+        "resources/src/*"
+    ]
+}

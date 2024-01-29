@@ -1,0 +1,308 @@
+:root {
+    height: 100%;
+    box-sizing: border-box;
+
+    --easy-color: #888888;
+    --normal-color: #4497a9;
+    --hard-color: #d14663;
+    --chaos-color: #323232;
+    --chaos-outline: #f9d4b4;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+    border-bottom: 1px solid black;
+    background-color: #b0e0e6;
+    text-align: center;
+}
+
+h1 {
+    margin-block: 0;
+    padding-block-start: 0.5em;
+    padding-block-end: 0.5em;
+}
+
+#container {
+    padding: 8px;
+    background-color: #fffff0;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+#footer {
+    border-top: 1px solid black;
+    background-color: #b0e6b0;
+    padding: 1em;
+}
+
+button {
+    cursor: pointer;
+}
+
+table {
+    border-spacing: 0;
+}
+
+#main-content {
+    display: flex;
+    justify-content: center;
+}
+
+#main-content-footer {
+    display: flex;
+    justify-content: space-around;
+}
+
+#footer button {
+    display: inline-block;
+}
+
+#boss-list tr td {
+    padding: 8px;
+}
+
+#boss-list tr:not(:last-child) td {
+    border-bottom: 2px solid #ddddd0;
+}
+
+#boss-content {
+    height: 100%;
+}
+
+#boss-content .data-table {
+    display: block;
+    width: fit-content;
+    max-height: calc(100% - 3em);
+    overflow-y: auto;
+}
+
+#boss-content .data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#boss-content .data-table tfoot tr th {
+    border-top: 1px solid black;
+}
+
+.footer-title {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.boss-name {
+    font-weight: bold;
+}
+
+.boss-name img {
+    margin-right: 1em;
+    vertical-align: middle;
+}
+
+.difficulty {
+    width: 100px;
+    padding: 1em;
+    border-radius: 1.5em;
+    margin: 0.5em;
+    font-weight: bold;
+    text-align: center;
+}
+
+span.difficulty {
+    margin-right: 1em;
+}
+
+.difficulty.easy {
+    background-color: var(--easy-color);
+    color: white;
+    border: 2px solid var(--easy-color);
+}
+
+button.difficulty.easy:hover {
+    background-color: color-mix(in srgb, var(--easy-color) 80%, white);
+    border-color: color-mix(in srgb, var(--easy-color) 80%, white);
+}
+
+.difficulty.normal {
+    background-color: var(--normal-color);
+    color: white;
+    border: 2px solid var(--normal-color)
+}
+
+button.difficulty.normal:hover {
+    background-color: color-mix(in srgb, var(--normal-color) 80%, white);
+    border-color: color-mix(in srgb, var(--normal-color) 80%, white);
+}
+
+.difficulty.hard {
+    background-color: var(--hard-color);
+    color: white;
+    border: 2px solid var(--hard-color);
+}
+
+button.difficulty.hard:hover {
+    background-color: color-mix(in srgb, var(--hard-color) 80%, white);
+    border-color: color-mix(in srgb, var(--hard-color) 80%, white);
+}
+
+.difficulty.chaos {
+    background-color: var(--chaos-color);
+    color: var(--chaos-outline);
+    border: 2px solid var(--chaos-outline);
+}
+
+button.difficulty.chaos:hover {
+    background-color: color-mix(in srgb, var(--chaos-color) 80%, white);
+    color: color-mix(in srgb, var(--chaos-outline) 80%, white);
+    border-color: color-mix(in srgb, var(--chaos-outline) 80%, white);
+}
+
+.difficulty.extreme {
+    background-color: var(--chaos-color);
+    color: var(--hard-color);
+    border: 2px solid var(--hard-color);
+}
+
+button.difficulty.extreme:hover {
+    background-color: color-mix(in srgb, var(--chaos-color) 80%, white);
+    color: color-mix(in srgb, var(--hard-color) 80%, white);
+    border-color: color-mix(in srgb, var(--hard-color) 80%, white);
+}
+
+.back-button {
+    margin-right: 40%;
+}
+
+.data-table {
+    margin-bottom: 1em;
+    border-left: 1px solid black;
+    text-align: center;
+}
+
+.data-table>:first-child th {
+    border-top: 1px solid black;
+}
+
+.data-table td, .data-table th {
+    padding: 0.25em;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.data-table thead {
+    background-color: #f0f0f0;
+}
+
+.data-table.data-table-sticky thead {
+    position: sticky;
+    top: 0;
+}
+
+.data-table tbody {
+    overflow-y: auto;
+}
+
+.data-table tbody tr {
+    background-color: white;
+}
+
+.data-table tbody tr:nth-child(2n) {
+    background-color: #f0ffff;
+}
+
+.data-table tbody tr.data-red {
+    background-color: #ffe0e0;
+}
+
+.data-table tfoot {
+    background-color: #f0f0f0;
+}
+
+.data-table.data-table-sticky tfoot {
+    position: sticky;
+    bottom: 0;
+}
+
+.data-table input[type=number] {
+    max-width: 60px;
+}
+
+.data-table input.small-number[type=number] {
+    max-width: 30px;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.summary-note {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.red-text {
+    color: red;
+    font-weight: bold;
+}
+
+.loot-card {
+    display: inline-flex;
+    flex-direction: column;
+    width: fit-content;
+    margin-right: 1em;
+}
+
+.loot-card-title {
+    width: calc(100% - 2px);
+    padding: 2px 0;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    background: #f0fff0;
+    text-align: center;
+    font-weight: bold;
+}
+
+button.icon-button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: #0099ff;
+}
+
+button.icon-button:hover {
+    background-color: #77ddff;
+}
+
+button.icon-button.warning {
+    background-color: #ff2222;
+}
+
+button.icon-button.warning:hover {
+    background-color: #ff8888;
+}
+
+button.icon-button[disabled] {
+    background-color: #999999 !important;
+    cursor: default;
+}
+
+button.icon-button img {
+    width: 16px;
+    height: 16px;
+}
+
+button.icon-button:not(:last-child) {
+    margin-right: 8px;
+}
