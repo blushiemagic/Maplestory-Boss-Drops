@@ -127,7 +127,8 @@ const lootSlots = Object.freeze({
     pitched_upgrade: Object.freeze({
         name: 'Exceptional Part',
         equip: false,
-        instanced: false
+        instanced: false,
+        ignoreDroprate: true
     }),
     furniture: Object.freeze({
         name: 'Furniture',
