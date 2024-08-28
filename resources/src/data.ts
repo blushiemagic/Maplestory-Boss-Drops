@@ -68,6 +68,11 @@ const lootSlots = Object.freeze({
         equip: true,
         instanced: false
     }),
+    pitched_extreme: Object.freeze({
+        name: 'Pitched Boss Accessory (Extreme)',
+        equip: true,
+        instanced: false
+    }),
     black_heart: Object.freeze({
         name: 'Damaged Black Heart',
         equip: false,
@@ -163,6 +168,16 @@ const bossList = Object.freeze({
                 black_heart: Object.freeze({}),
                 android_shared: Object.freeze({ nameOverride: 'Lotusroid' }),
                 ring_box_2: Object.freeze({}),
+                furniture: Object.freeze({})
+            }),
+            extreme: Object.freeze({
+                abso_weapon: Object.freeze({}),
+                abso_armor: Object.freeze({}),
+                pitched: Object.freeze({ nameOverride: 'Total Control' }),
+                pitched_extreme: Object.freeze({ nameOverride: 'Berserked' }),
+                black_heart: Object.freeze({}),
+                android_shared: Object.freeze({ nameOverride: 'Annihilation Weaon Lotusroid' }),
+                ring_box_4: Object.freeze({}),
                 furniture: Object.freeze({})
             })
         })
@@ -308,7 +323,7 @@ const bossList = Object.freeze({
             extreme: Object.freeze({
                 arcane_weapon: Object.freeze({}),
                 arcane_armor: Object.freeze({}),
-                pitched: Object.freeze({
+                pitched_extreme: Object.freeze({
                     nameOverride: 'Genesis Badge',
                     excludeFromTotal: true
                 }),
@@ -343,7 +358,7 @@ const bossList = Object.freeze({
                     nameOverride: 'Daybreak Pendant',
                     excludeFromTotal: true
                 }),
-                pitched: Object.freeze({
+                pitched_extreme: Object.freeze({
                     nameOverride: 'Mitra\'s Rage',
                     noEquip: true,
                     excludeFromTotal: true
