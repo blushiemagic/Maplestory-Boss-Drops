@@ -23,7 +23,7 @@ export interface LootEntry extends Partial<Record<LootSlotType, number>> {
     unknown: Readonly<Record<string, string>>;
 }
 
-const maxDrop: number = 400;
+const maxDrop: number[] = [ 400, 500 ];
 
 type TrialType = 'clears' | 'drop' | 'equip' | 'personal' | 'personal_equip' | LootSlotType;
 
@@ -101,7 +101,16 @@ export class LootHistory {
         this.entries.splice(index, 1);
     }
 
+    private getMaxDrop(date: Date) {
+        if (date >= ReleaseDates.milestone) {
+            return maxDrop[1];
+        } else {
+            return maxDrop[0];
+        }
+    }
+
     private addEntryToTotals(entry: LootEntry): void {
+        let maxDrop = this.getMaxDrop(entry.date);
         let drop = 1 + Math.min(entry.drop, maxDrop) / 100;
         let equip = 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100;
         let personal = 1 + Math.min(entry.personalDrop, maxDrop) / 100;
@@ -142,6 +151,7 @@ export class LootHistory {
 
     private removeEntryFromTotals(index: number): void {
         let entry: LootEntry = this.entries[index];
+        let maxDrop = this.getMaxDrop(entry.date);
         let drop = 1 + Math.min(entry.drop, maxDrop) / 100;
         let equip = 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100;
         let personal = 1 + Math.min(entry.personalDrop, maxDrop) / 100;
