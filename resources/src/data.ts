@@ -130,7 +130,7 @@ const lootSlots = Object.freeze({
         releaseDate: 'new_age'
     }),
     pitched_upgrade: Object.freeze({
-        name: 'Exceptional Part',
+        name: 'Exceptional Hammer',
         equip: false,
         instanced: false,
         ignoreDroprate: true
@@ -328,10 +328,7 @@ const bossList = Object.freeze({
                     excludeFromTotal: true
                 }),
                 ring_box_4: Object.freeze({}),
-                pitched_upgrade: Object.freeze({
-                    nameOverride: 'Nightmare Fragment',
-                    excludeFromTotal: true
-                }),
+                pitched_upgrade: Object.freeze({ excludeFromTotal: true }),
                 furniture: Object.freeze({ excludeFromTotal: true })
             })
         })
@@ -364,7 +361,7 @@ const bossList = Object.freeze({
                     excludeFromTotal: true
                 }),
                 ring_box_4: Object.freeze({}),
-                pitched_upgrade: Object.freeze({ nameOverride: 'Gravity Module' }),
+                pitched_upgrade: Object.freeze({}),
                 furniture: Object.freeze({ excludeFromTotal: true })
             })
         })
@@ -399,7 +396,7 @@ const bossList = Object.freeze({
                 }),
                 ring_box_4: Object.freeze({}),
                 ring_stone: Object.freeze({}),
-                pitched_upgrade: Object.freeze({ nameOverride: 'Mark of Destruction' })
+                pitched_upgrade: Object.freeze({})
             })
         })
     }),
@@ -424,7 +421,7 @@ const bossList = Object.freeze({
                 android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
                 ring_box_4: Object.freeze({}),
                 ring_stone: Object.freeze({}),
-                pitched_upgrade: Object.freeze({ nameOverride: 'Helmet of Loyalty' })
+                pitched_upgrade: Object.freeze({})
             })
         })
     })
