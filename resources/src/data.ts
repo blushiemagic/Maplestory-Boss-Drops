@@ -5,7 +5,8 @@ export type Difficulty = 'easy' | 'normal' | 'hard' | 'chaos' | 'extreme';
 export const ReleaseDates = Object.freeze({
     furniture: new Date(2022, 7 - 1, 21),
     new_age: new Date(2023, 11 - 1, 16),
-    nickyroid: new Date(2023, 12 - 1, 14)
+    nickyroid: new Date(2023, 12 - 1, 14),
+    milestone: new Date(2024, 11 - 1, 21)
 });
 export type ReleaseDate = keyof typeof ReleaseDates;
 
@@ -52,6 +53,14 @@ const lootSlots = Object.freeze({
         instanced: true,
         ignoreDroprate: true,
         skipTotal: true
+    }),
+    eternal_armor: Object.freeze({
+        name: 'Eternal Armor Box',
+        equip: false,
+        instanced: false,
+        ignoreDroprate: true,
+        skipTotal: true,
+        releaseDate: 'milestone'
     }),
     dawn_normal: Object.freeze({
         name: 'Dawn Boss Accessory (Normal)',
@@ -382,6 +391,7 @@ const bossList = Object.freeze({
                 ring_stone: Object.freeze({})
             }),
             chaos: Object.freeze({
+                eternal_armor: Object.freeze({ nameOverride: 'Divine Eternal Armor Box' }),
                 android_shared: Object.freeze({
                     nameOverride: 'Nickyroid',
                     releaseDateOverride: 'nickyroid'
@@ -390,6 +400,7 @@ const bossList = Object.freeze({
                 ring_stone: Object.freeze({})
             }),
             extreme: Object.freeze({
+                eternal_armor: Object.freeze({ nameOverride: 'Divine Eternal Armor Box' }),
                 android_shared: Object.freeze({
                     nameOverride: 'Nickyroid',
                     releaseDateOverride: 'nickyroid'
@@ -413,11 +424,13 @@ const bossList = Object.freeze({
                 ring_stone: Object.freeze({})
             }),
             hard: Object.freeze({
+                eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
                 android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
                 ring_box_4: Object.freeze({}),
                 ring_stone: Object.freeze({})
             }),
             extreme: Object.freeze({
+                eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
                 android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
                 ring_box_4: Object.freeze({}),
                 ring_stone: Object.freeze({}),
