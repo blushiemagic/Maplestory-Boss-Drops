@@ -8,6 +8,7 @@ import {
     LootSlotType,
     ReleaseDates,
     dateToString,
+    getMaxDroprate,
     parseDate
 } from "./data.js";
 import { Settings } from "./settings.js";
@@ -101,16 +102,8 @@ export class LootHistory {
         this.entries.splice(index, 1);
     }
 
-    private getMaxDrop(date: Date) {
-        if (date >= ReleaseDates.milestone) {
-            return maxDrop[1];
-        } else {
-            return maxDrop[0];
-        }
-    }
-
     private addEntryToTotals(entry: LootEntry): void {
-        let maxDrop = this.getMaxDrop(entry.date);
+        let maxDrop = getMaxDroprate(entry.date);
         let drop = 1 + Math.min(entry.drop, maxDrop) / 100;
         let equip = 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100;
         let personal = 1 + Math.min(entry.personalDrop, maxDrop) / 100;
@@ -151,7 +144,7 @@ export class LootHistory {
 
     private removeEntryFromTotals(index: number): void {
         let entry: LootEntry = this.entries[index];
-        let maxDrop = this.getMaxDrop(entry.date);
+        let maxDrop = getMaxDroprate(entry.date);
         let drop = 1 + Math.min(entry.drop, maxDrop) / 100;
         let equip = 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100;
         let personal = 1 + Math.min(entry.personalDrop, maxDrop) / 100;
@@ -258,8 +251,8 @@ function makeNewHistories(): Readonly<Record<BossType, Data<Difficulty, LootHist
     for (bossType in BossList) {
         let bossHistories: Partial<Record<Difficulty, LootHistory>> = {};
         let difficulty: Difficulty;
-        for (difficulty in BossList[bossType].loots) {
-            let loots: Data<LootSlotType, LootInfo> = BossList[bossType].loots[difficulty]!;
+        for (difficulty in BossList[bossType].difficulties) {
+            let loots: Data<LootSlotType, LootInfo> = BossList[bossType].difficulties[difficulty]!.loots;
             bossHistories[difficulty] = new LootHistory(loots);
         }
         newHistories[bossType] = Object.freeze(bossHistories);
@@ -347,7 +340,7 @@ function loadTable(content: string, start: number, end: number): boolean {
         return false;
     }
     let bossName: BossType = forceStringClone(tableName[0]) as BossType;
-    if (!BossList[bossName].loots.hasOwnProperty(tableName[1])) {
+    if (!BossList[bossName].difficulties.hasOwnProperty(tableName[1])) {
         return false;
     }
     let difficulty: Difficulty = forceStringClone(tableName[1]) as Difficulty;

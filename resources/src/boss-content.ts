@@ -1,5 +1,5 @@
 import { Content, ContentManager } from './content.js';
-import { BossList, BossType, Difficulty, LootSlots, dateToString } from './data.js';
+import { BossList, BossType, Difficulty, LootSlots, getMaxPartySize } from './data.js';
 import { MainContent } from './main-content.js';
 import { LootEntry, SaveData } from './save-data.js';
 
@@ -17,9 +17,10 @@ export class BossContent extends Content {
 
     getHtml(): string | Promise<string> | HTMLElement {
         let history = SaveData.getHistory(this.boss, this.difficulty);
+        let bossData = BossList[this.boss].difficulties[this.difficulty]!;
         let columns: string[] = ['#', 'Date', 'Clear Size'];
         for (let lootSlot of history.getLootSlots()) {
-            let nameOverride = BossList[this.boss].loots[this.difficulty]![lootSlot]!.nameOverride;
+            let nameOverride = bossData.loots[lootSlot]!.nameOverride;
             columns.push(nameOverride ?? LootSlots[lootSlot].name);
         }
         columns.push('Droprate', 'Greed', 'Personal Drop', 'Personal Greed', 'Notes', '');
@@ -236,6 +237,7 @@ export class BossContent extends Content {
 
     private createEditRow(count: number, entry?: LootEntry): HTMLTableRowElement {
         let history = SaveData.getHistory(this.boss, this.difficulty);
+        let maxPartySize = getMaxPartySize(this.boss, this.difficulty);
         let row = document.createElement('tr');
         row.role = 'form';
         row.ariaLabel = 'Edit Row';
@@ -263,7 +265,7 @@ export class BossContent extends Content {
         input.name = 'clearSize';
         input.classList.add('small-number')
         input.min = '1';
-        input.max = '6';
+        input.max = maxPartySize.toString();
         input.valueAsNumber = entry ? entry.clearSize : 1;
         inputCell.appendChild(input);
         input.onclick = (ev: Event) => ev.preventDefault();
@@ -280,7 +282,7 @@ export class BossContent extends Content {
             if (LootSlots[lootSlot].instanced && LootSlots[lootSlot].ignoreDroprate) {
                 input.type = 'number';
                 input.min = '0';
-                input.max = '6';
+                input.max = maxPartySize.toString();
                 input.classList.add('small-number');
                 input.valueAsNumber = entry ? entry[lootSlot]! : 0;
                 input.onclick = (ev: Event) => ev.preventDefault();

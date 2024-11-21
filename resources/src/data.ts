@@ -18,6 +18,14 @@ export function parseDate(date: string): Date {
     return new Date(date);
 }
 
+export function getMaxDroprate(date: Date): number {
+    if (date >= ReleaseDates.milestone) {
+        return 500;
+    } else {
+        return 400;
+    }
+}
+
 export interface LootSlot {
     readonly name: string;
     readonly equip: boolean;
@@ -161,283 +169,350 @@ export interface LootInfo {
     readonly releaseDateOverride?: ReleaseDate;
 }
 
-export interface Boss{
+export interface Boss {
     readonly name: string;
-    readonly loots: Data<Difficulty, Data<LootSlotType, LootInfo>>;
+    readonly maxPartySize?: number;
+    readonly difficulties: Data<Difficulty, BossDifficulty>;
 };
+
+export interface BossDifficulty {
+    readonly maxPartySize?: number;
+    readonly loots: Data<LootSlotType, LootInfo>;
+}
 
 const bossList = Object.freeze({
     lotus: Object.freeze({
         name: 'Lotus',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             hard: Object.freeze({
-                abso_weapon: Object.freeze({}),
-                abso_armor: Object.freeze({}),
-                pitched: Object.freeze({ nameOverride: 'Berserked' }),
-                black_heart: Object.freeze({}),
-                android_shared: Object.freeze({ nameOverride: 'Lotusroid' }),
-                ring_box_2: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    abso_weapon: Object.freeze({}),
+                    abso_armor: Object.freeze({}),
+                    pitched: Object.freeze({ nameOverride: 'Berserked' }),
+                    black_heart: Object.freeze({}),
+                    android_shared: Object.freeze({ nameOverride: 'Lotusroid' }),
+                    ring_box_2: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             }),
             extreme: Object.freeze({
-                abso_weapon: Object.freeze({}),
-                abso_armor: Object.freeze({}),
-                pitched: Object.freeze({ nameOverride: 'Total Control' }),
-                pitched_extreme: Object.freeze({ nameOverride: 'Berserked' }),
-                black_heart: Object.freeze({}),
-                android_shared: Object.freeze({ nameOverride: 'Annihilation Weaon Lotusroid' }),
-                ring_box_4: Object.freeze({}),
-                furniture: Object.freeze({})
+                maxPartySize: 2,
+                loots: Object.freeze({
+                    abso_weapon: Object.freeze({}),
+                    abso_armor: Object.freeze({}),
+                    pitched: Object.freeze({ nameOverride: 'Total Control' }),
+                    pitched_extreme: Object.freeze({ nameOverride: 'Berserked' }),
+                    black_heart: Object.freeze({}),
+                    android_shared: Object.freeze({ nameOverride: 'Annihilation Weaon Lotusroid' }),
+                    ring_box_4: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     damien: Object.freeze({
         name: 'Damien',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             hard: Object.freeze({
-                abso_weapon: Object.freeze({}),
-                abso_armor: Object.freeze({}),
-                pitched: Object.freeze({ nameOverride: 'Magic Eyepatch' }),
-                ruin_shield: Object.freeze({}),
-                android_shared: Object.freeze({ nameOverride: 'Damienroid' }),
-                ring_box_2: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    abso_weapon: Object.freeze({}),
+                    abso_armor: Object.freeze({}),
+                    pitched: Object.freeze({ nameOverride: 'Magic Eyepatch' }),
+                    ruin_shield: Object.freeze({}),
+                    android_shared: Object.freeze({ nameOverride: 'Damienroid' }),
+                    ring_box_2: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     slime: Object.freeze({
         name: 'Guardian Angel Slime',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                dawn_normal: Object.freeze({
-                    nameOverride: 'Guardian Angel Ring',
-                    excludeFromTotal: true
-                }),
-                ring_box_1: Object.freeze({})
+                loots: Object.freeze({
+                    dawn_normal: Object.freeze({
+                        nameOverride: 'Guardian Angel Ring',
+                        excludeFromTotal: true
+                    }),
+                    ring_box_1: Object.freeze({})
+                })
             }),
             chaos: Object.freeze({
-                dawn: Object.freeze({
-                    nameOverride: 'Guardian Angel Ring',
-                    excludeFromTotal: true
-                }),
-                ring_box_3: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    dawn: Object.freeze({
+                        nameOverride: 'Guardian Angel Ring',
+                        excludeFromTotal: true
+                    }),
+                    ring_box_3: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     lucid: Object.freeze({
         name: 'Lucid',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                dawn_normal: Object.freeze({ nameOverride: 'Twilight Mark' }),
-                ring_box_1: Object.freeze({})
+                loots: Object.freeze({
+                    dawn_normal: Object.freeze({ nameOverride: 'Twilight Mark' }),
+                    ring_box_1: Object.freeze({})
+                })
             }),
             hard: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                dawn: Object.freeze({ nameOverride: 'Twilight Mark' }),
-                pitched: Object.freeze({ nameOverride: 'Dreamy Belt' }),
-                android_instanced: Object.freeze({ nameOverride: 'Lucidroid' }),
-                ring_box_2: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    dawn: Object.freeze({ nameOverride: 'Twilight Mark' }),
+                    pitched: Object.freeze({ nameOverride: 'Dreamy Belt' }),
+                    android_instanced: Object.freeze({ nameOverride: 'Lucidroid' }),
+                    ring_box_2: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     will: Object.freeze({
         name: 'Will',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                dawn_normal: Object.freeze({ nameOverride: 'Twilight Mark' }),
-                ring_box_1: Object.freeze({})
+                loots: Object.freeze({
+                    dawn_normal: Object.freeze({ nameOverride: 'Twilight Mark' }),
+                    ring_box_1: Object.freeze({})
+                })
             }),
             hard: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                dawn: Object.freeze({ nameOverride: 'Twilight Mark' }),
-                pitched: Object.freeze({
-                    nameOverride: 'Cursed Spellbook',
-                    noEquip: true
-                }),
-                ring_box_2: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    dawn: Object.freeze({ nameOverride: 'Twilight Mark' }),
+                    pitched: Object.freeze({
+                        nameOverride: 'Cursed Spellbook',
+                        noEquip: true
+                    }),
+                    ring_box_2: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     gloom: Object.freeze({
         name: 'Gloom',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                dawn_normal: Object.freeze({ nameOverride: 'Estella Earrings' }),
-                ring_box_1: Object.freeze({})
+                loots: Object.freeze({
+                    dawn_normal: Object.freeze({ nameOverride: 'Estella Earrings' }),
+                    ring_box_1: Object.freeze({})
+                })
             }),
             chaos: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                dawn: Object.freeze({ nameOverride: 'Estella Earrings' }),
-                pitched: Object.freeze({ nameOverride: 'Endless Terror' }),
-                ring_box_3: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    dawn: Object.freeze({ nameOverride: 'Estella Earrings' }),
+                    pitched: Object.freeze({ nameOverride: 'Endless Terror' }),
+                    ring_box_3: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     vhilla: Object.freeze({
         name: 'Verus Hilla',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                dawn_normal: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
-                ring_box_2: Object.freeze({})
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    dawn_normal: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
+                    ring_box_2: Object.freeze({})
+                })
             }),
             hard: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                dawn: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
-                pitched: Object.freeze({ nameOverride: 'Source of Suffering' }),
-                ring_box_3: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    dawn: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
+                    pitched: Object.freeze({ nameOverride: 'Source of Suffering' }),
+                    ring_box_3: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     darknell: Object.freeze({
         name: 'Darknell',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                dawn_normal: Object.freeze({ nameOverride: 'Estella Earrings' }),
-                ring_box_1: Object.freeze({})
+                loots: Object.freeze({
+                    dawn_normal: Object.freeze({ nameOverride: 'Estella Earrings' }),
+                    ring_box_1: Object.freeze({})
+                })
             }),
             hard: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                dawn: Object.freeze({ nameOverride: 'Estella Earrings' }),
-                pitched: Object.freeze({ nameOverride: 'Commanding Force Earrings' }),
-                ring_box_3: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    dawn: Object.freeze({ nameOverride: 'Estella Earrings' }),
+                    pitched: Object.freeze({ nameOverride: 'Commanding Force Earrings' }),
+                    ring_box_3: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             })
         })
     }),
     black_mage: Object.freeze({
         name: 'Black Mage',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             hard: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                pitched: Object.freeze({
-                    nameOverride: 'Genesis Badge',
-                    excludeFromTotal: true
-                }),
-                ring_box_4: Object.freeze({}),
-                furniture: Object.freeze({ excludeFromTotal: true })
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    pitched: Object.freeze({
+                        nameOverride: 'Genesis Badge',
+                        excludeFromTotal: true
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    furniture: Object.freeze({ excludeFromTotal: true })
+                })
             }),
             extreme: Object.freeze({
-                arcane_weapon: Object.freeze({}),
-                arcane_armor: Object.freeze({}),
-                pitched_extreme: Object.freeze({
-                    nameOverride: 'Genesis Badge',
-                    excludeFromTotal: true
-                }),
-                ring_box_4: Object.freeze({}),
-                pitched_upgrade: Object.freeze({ excludeFromTotal: true }),
-                furniture: Object.freeze({ excludeFromTotal: true })
+                loots: Object.freeze({
+                    arcane_weapon: Object.freeze({}),
+                    arcane_armor: Object.freeze({}),
+                    pitched_extreme: Object.freeze({
+                        nameOverride: 'Genesis Badge',
+                        excludeFromTotal: true
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    pitched_upgrade: Object.freeze({ excludeFromTotal: true }),
+                    furniture: Object.freeze({ excludeFromTotal: true })
+                })
             })
         })
     }),
     seren: Object.freeze({
         name: 'Chosen Seren',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             normal: Object.freeze({
-                dawn_normal: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
-                ring_box_3: Object.freeze({})
+                loots: Object.freeze({
+                    dawn_normal: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
+                    ring_box_3: Object.freeze({})
+                })
             }),
             hard: Object.freeze({
-                dawn: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
-                pitched: Object.freeze({
-                    nameOverride: 'Mitra\'s Rage',
-                    noEquip: true,
-                    excludeFromTotal: true
-                }),
-                ring_box_4: Object.freeze({}),
-                furniture: Object.freeze({})
+                loots: Object.freeze({
+                    dawn: Object.freeze({ nameOverride: 'Daybreak Pendant' }),
+                    pitched: Object.freeze({
+                        nameOverride: 'Mitra\'s Rage',
+                        noEquip: true,
+                        excludeFromTotal: true
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    furniture: Object.freeze({})
+                })
             }),
             extreme: Object.freeze({
-                dawn: Object.freeze({
-                    nameOverride: 'Daybreak Pendant',
-                    excludeFromTotal: true
-                }),
-                pitched_extreme: Object.freeze({
-                    nameOverride: 'Mitra\'s Rage',
-                    noEquip: true,
-                    excludeFromTotal: true
-                }),
-                ring_box_4: Object.freeze({}),
-                pitched_upgrade: Object.freeze({}),
-                furniture: Object.freeze({ excludeFromTotal: true })
+                loots: Object.freeze({
+                    dawn: Object.freeze({
+                        nameOverride: 'Daybreak Pendant',
+                        excludeFromTotal: true
+                    }),
+                    pitched_extreme: Object.freeze({
+                        nameOverride: 'Mitra\'s Rage',
+                        noEquip: true,
+                        excludeFromTotal: true
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    pitched_upgrade: Object.freeze({}),
+                    furniture: Object.freeze({ excludeFromTotal: true })
+                })
             })
         })
     }),
     kalos: Object.freeze({
         name: 'Kalos the Guardian',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             easy: Object.freeze({
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({})
+                loots: Object.freeze({
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
             }),
             normal: Object.freeze({
-                android_shared: Object.freeze({
-                    nameOverride: 'Nickyroid',
-                    releaseDateOverride: 'nickyroid'
-                }),
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({})
+                loots: Object.freeze({
+                    android_shared: Object.freeze({
+                        nameOverride: 'Nickyroid',
+                        releaseDateOverride: 'nickyroid'
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
             }),
             chaos: Object.freeze({
-                eternal_armor: Object.freeze({ nameOverride: 'Divine Eternal Armor Box' }),
-                android_shared: Object.freeze({
-                    nameOverride: 'Nickyroid',
-                    releaseDateOverride: 'nickyroid'
-                }),
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({})
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Divine Eternal Armor Box' }),
+                    android_shared: Object.freeze({
+                        nameOverride: 'Nickyroid',
+                        releaseDateOverride: 'nickyroid'
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
             }),
             extreme: Object.freeze({
-                eternal_armor: Object.freeze({ nameOverride: 'Divine Eternal Armor Box' }),
-                android_shared: Object.freeze({
-                    nameOverride: 'Nickyroid',
-                    releaseDateOverride: 'nickyroid'
-                }),
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({}),
-                pitched_upgrade: Object.freeze({})
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Divine Eternal Armor Box' }),
+                    android_shared: Object.freeze({
+                        nameOverride: 'Nickyroid',
+                        releaseDateOverride: 'nickyroid'
+                    }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({}),
+                    pitched_upgrade: Object.freeze({})
+                })
             })
         })
     }),
     kaling: Object.freeze({
         name: 'Kaling',
-        loots: Object.freeze({
+        difficulties: Object.freeze({
             easy: Object.freeze({
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({})
+                loots: Object.freeze({
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
             }),
             normal: Object.freeze({
-                android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({})
+                loots: Object.freeze({
+                    android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
             }),
             hard: Object.freeze({
-                eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
-                android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({})
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
             }),
             extreme: Object.freeze({
-                eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
-                android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
-                ring_box_4: Object.freeze({}),
-                ring_stone: Object.freeze({}),
-                pitched_upgrade: Object.freeze({})
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({}),
+                    pitched_upgrade: Object.freeze({})
+                })
             })
         })
     })
 });
 export type BossType = keyof typeof bossList;
 export const BossList: Readonly<Record<BossType, Boss>> = bossList;
+
+export function getMaxPartySize(boss: BossType, difficulty: Difficulty): number {
+    return BossList[boss].difficulties[difficulty]?.maxPartySize ?? BossList[boss].maxPartySize ?? 6;
+}

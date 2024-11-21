@@ -28,7 +28,7 @@ export class MainContent extends Content {
 
             let bossDifficultyContainer = document.createElement('td');
             let difficulty: Difficulty;
-            for (difficulty in boss.loots) {
+            for (difficulty in boss.difficulties) {
                 let difficultyButton = document.createElement('button');
                 difficultyButton.type = 'button';
                 difficultyButton.classList.add('difficulty');

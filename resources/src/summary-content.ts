@@ -57,8 +57,8 @@ export class SummaryContent extends Content {
             let bossId: BossType;
             for (bossId in BossList) {
                 let difficulty: Difficulty;
-                for (difficulty in BossList[bossId].loots) {
-                    let lootInfo = BossList[bossId].loots[difficulty]![lootSlotId];
+                for (difficulty in BossList[bossId].difficulties) {
+                    let lootInfo = BossList[bossId].difficulties[difficulty]!.loots[lootSlotId];
                     let history = SaveData.getHistory(bossId, difficulty);
                     if (lootInfo && history.entryCount() > 0) {
                         let difficultyName = difficulty[0].toUpperCase() + difficulty.substring(1);
