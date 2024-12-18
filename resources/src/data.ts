@@ -97,6 +97,11 @@ const lootSlots = Object.freeze({
         instanced: false,
         skipTotal: true
     }),
+    brilliant: Object.freeze({
+        name: 'Brilliant Boss Accessory',
+        equip: true,
+        instanced: false
+    }),
     ruin_shield: Object.freeze({
         name: 'Ruin Force Shield',
         equip: true,
@@ -506,6 +511,26 @@ const bossList = Object.freeze({
                     ring_box_4: Object.freeze({}),
                     ring_stone: Object.freeze({}),
                     pitched_upgrade: Object.freeze({})
+                })
+            })
+        })
+    }),
+    limbo: Object.freeze({
+        name: 'Limbo',
+        maxPartySize: 3,
+        difficulties: Object.freeze({
+            normal: Object.freeze({
+                loots: Object.freeze({
+                    android_shared: Object.freeze({ nameOverride: 'Limboroid' }),
+                    ring_box_4: Object.freeze({})
+                })
+            }),
+            hard: Object.freeze({
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Eternal Armor of Desire Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Limboroid' }),
+                    brilliant: Object.freeze({ nameOverride: 'Whisper of the Source' }),
+                    ring_box_4: Object.freeze({})
                 })
             })
         })
