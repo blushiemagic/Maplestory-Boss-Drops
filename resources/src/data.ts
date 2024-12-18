@@ -6,7 +6,8 @@ export const ReleaseDates = Object.freeze({
     furniture: new Date(2022, 7 - 1, 21),
     new_age: new Date(2023, 11 - 1, 16),
     nickyroid: new Date(2023, 12 - 1, 14),
-    milestone: new Date(2024, 11 - 1, 21)
+    milestone: new Date(2024, 11 - 1, 21),
+    eternal_box: new Date(2024, 12 - 1, 18)
 });
 export type ReleaseDate = keyof typeof ReleaseDates;
 
@@ -68,7 +69,7 @@ const lootSlots = Object.freeze({
         instanced: false,
         ignoreDroprate: true,
         skipTotal: true,
-        releaseDate: 'milestone'
+        releaseDate: 'eternal_box'
     }),
     dawn_normal: Object.freeze({
         name: 'Dawn Boss Accessory (Normal)',
