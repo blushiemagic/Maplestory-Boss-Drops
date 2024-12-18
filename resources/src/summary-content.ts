@@ -69,7 +69,11 @@ export class SummaryContent extends Content {
     
                         let cell = document.createElement('td');
                         cell.classList.add('boss-name');
-                        cell.appendChild(document.createTextNode(difficultyName + ' ' + BossList[bossId].name));
+                        let bossName = difficultyName + ' ' + BossList[bossId].name;
+                        if (lootInfo.summaryClarifier) {
+                            bossName += ' (' + lootInfo.summaryClarifier + ')';
+                        }
+                        cell.appendChild(document.createTextNode(bossName));
                         row.appendChild(cell);
     
                         cell = document.createElement('td');

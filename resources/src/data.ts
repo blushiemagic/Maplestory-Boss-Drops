@@ -173,6 +173,7 @@ export interface LootInfo {
     readonly noEquip?: boolean;
     readonly excludeFromTotal?: boolean;
     readonly releaseDateOverride?: ReleaseDate;
+    readonly summaryClarifier?: string;
 }
 
 export interface Boss {
@@ -194,7 +195,7 @@ const bossList = Object.freeze({
                 loots: Object.freeze({
                     abso_weapon: Object.freeze({}),
                     abso_armor: Object.freeze({}),
-                    pitched: Object.freeze({ nameOverride: 'Berserked' }),
+                    pitched: Object.freeze({ nameOverride: 'Berserked', summaryClarifier: 'Zerk' }),
                     black_heart: Object.freeze({}),
                     android_shared: Object.freeze({ nameOverride: 'Lotusroid' }),
                     ring_box_2: Object.freeze({}),
@@ -206,8 +207,8 @@ const bossList = Object.freeze({
                 loots: Object.freeze({
                     abso_weapon: Object.freeze({}),
                     abso_armor: Object.freeze({}),
-                    pitched: Object.freeze({ nameOverride: 'Total Control' }),
-                    pitched_extreme: Object.freeze({ nameOverride: 'Berserked' }),
+                    pitched: Object.freeze({ nameOverride: 'Total Control', summaryClarifier: 'TC' }),
+                    pitched_extreme: Object.freeze({ nameOverride: 'Berserked', summaryClarifier: 'Zerk' }),
                     black_heart: Object.freeze({}),
                     android_shared: Object.freeze({ nameOverride: 'Annihilation Weaon Lotusroid' }),
                     ring_box_4: Object.freeze({}),
