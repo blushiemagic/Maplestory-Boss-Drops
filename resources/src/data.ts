@@ -66,7 +66,7 @@ const lootSlots = Object.freeze({
     eternal_armor: Object.freeze({
         name: 'Eternal Armor Box',
         equip: false,
-        instanced: false,
+        instanced: true,
         ignoreDroprate: true,
         skipTotal: true,
         releaseDate: 'eternal_box'
