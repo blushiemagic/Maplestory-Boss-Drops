@@ -7,7 +7,8 @@ export const ReleaseDates = Object.freeze({
     new_age: new Date(2023, 11 - 1, 16),
     nickyroid: new Date(2023, 12 - 1, 14),
     milestone: new Date(2024, 11 - 1, 21),
-    eternal_box: new Date(2024, 12 - 1, 18)
+    eternal_box: new Date(2024, 12 - 1, 18),
+    kalos_fan: new Date(2025, 2 - 1, 13)
 });
 export type ReleaseDate = keyof typeof ReleaseDates;
 
@@ -453,7 +454,8 @@ const bossList = Object.freeze({
                         releaseDateOverride: 'nickyroid'
                     }),
                     ring_box_4: Object.freeze({}),
-                    ring_stone: Object.freeze({})
+                    ring_stone: Object.freeze({}),
+                    furniture: Object.freeze({ releaseDateOverride: 'kalos_fan' })
                 })
             }),
             chaos: Object.freeze({
