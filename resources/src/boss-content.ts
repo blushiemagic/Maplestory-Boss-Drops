@@ -19,9 +19,11 @@ export class BossContent extends Content {
         let history = SaveData.getHistory(this.boss, this.difficulty);
         let bossData = BossList[this.boss].difficulties[this.difficulty]!;
         let columns: string[] = ['#', 'Date', 'Clear Size'];
+        let hideColumns: boolean[] = [false, false, false];
         for (let lootSlot of history.getLootSlots()) {
             let nameOverride = bossData.loots[lootSlot]!.nameOverride;
             columns.push(nameOverride ?? LootSlots[lootSlot].name);
+            hideColumns.push(bossData.loots[lootSlot]!.removed != undefined);
         }
         columns.push('Droprate', 'Greed', 'Personal Drop', 'Personal Greed', 'Notes', '');
         let bossContent = document.createElement('div');
@@ -32,9 +34,12 @@ export class BossContent extends Content {
         table.classList.add('data-table-sticky');
         let header = document.createElement('thead');
         let headerRow = document.createElement('tr');
-        for (let column of columns) {
+        for (let k = 0; k < columns.length; k++) {
             let headerCell = document.createElement('th');
-            headerCell.appendChild(document.createTextNode(column));
+            headerCell.appendChild(document.createTextNode(columns[k]));
+            if (hideColumns[k]) {
+                headerCell.hidden = true;
+            }
             headerRow.appendChild(headerCell);
         }
         header.appendChild(headerRow);
@@ -44,32 +49,41 @@ export class BossContent extends Content {
         let count: number = 0;
         for (let entry of history.getEntries()) {
             count++;
-            body.appendChild(this.createDisplayRow(count, entry));
+            body.appendChild(this.createDisplayRow(count, entry, hideColumns));
         }
         table.appendChild(body);
 
         let footer = document.createElement('tfoot');
         let footerRow = document.createElement('tr');
-        for (let column of columns) {
+        for (let k = 0; k < columns.length; k++) {
             let footerCell = document.createElement('th');
-            footerCell.appendChild(document.createTextNode(column));
-            footerRow.appendChild(footerCell);
-        }
-        footer.appendChild(footerRow);
-        footerRow = document.createElement('tr');
-        for (let column of columns) {
-            let footerCell = document.createElement('td');
-            if (column == 'Date') {
-                footerCell.appendChild(document.createTextNode('Total'));
+            footerCell.appendChild(document.createTextNode(columns[k]));
+            if (hideColumns[k]) {
+                footerCell.hidden = true;
             }
             footerRow.appendChild(footerCell);
         }
         footer.appendChild(footerRow);
         footerRow = document.createElement('tr');
-        for (let column of columns) {
+        for (let k = 0; k < columns.length; k++) {
             let footerCell = document.createElement('td');
-            if (column == 'Date') {
+            if (columns[k] == 'Date') {
+                footerCell.appendChild(document.createTextNode('Total'));
+            }
+            if (hideColumns[k]) {
+                footerCell.hidden = true;
+            }
+            footerRow.appendChild(footerCell);
+        }
+        footer.appendChild(footerRow);
+        footerRow = document.createElement('tr');
+        for (let k = 0; k < columns.length; k++) {
+            let footerCell = document.createElement('td');
+            if (columns[k] == 'Date') {
                 footerCell.appendChild(document.createTextNode('Rates'));
+            }
+            if (hideColumns[k]) {
+                footerCell.hidden = true;
             }
             footerRow.appendChild(footerCell);
         }
@@ -81,14 +95,14 @@ export class BossContent extends Content {
         let addRowButton = document.createElement('button');
         addRowButton.id = 'add-row';
         addRowButton.type = 'button';
-        addRowButton.onclick = this.addRow.bind(this);
+        addRowButton.onclick = this.addRow.bind(this, hideColumns);
         addRowButton.appendChild(document.createTextNode('Add Row'));
         bossContent.appendChild(addRowButton);
 
         return bossContent;
     }
 
-    private createDisplayRow(count: number, entry: LootEntry): HTMLTableRowElement {
+    private createDisplayRow(count: number, entry: LootEntry, hideColumns: boolean[]): HTMLTableRowElement {
         let history = SaveData.getHistory(this.boss, this.difficulty);
         let row = document.createElement('tr');
 
@@ -99,7 +113,7 @@ export class BossContent extends Content {
         this.addCellToRow(row, month + '/' + date + '/' + year);
         this.addCellToRow(row, entry.clearSize.toString());
         for (let lootSlot of history.getLootSlots()) {
-            this.addCellToRow(row, entry[lootSlot]!.toString());
+            this.addCellToRow(row, entry[lootSlot]!.toString(), hideColumns[row.childElementCount]);
         }
         this.addCellToRow(row, entry.drop.toString());
         this.addCellToRow(row, entry.greed.toString());
@@ -118,7 +132,7 @@ export class BossContent extends Content {
         button.appendChild(img);
         button.ariaLabel = 'Edit';
         button.title = 'Edit';
-        button.onclick = this.makeEditRow(count - 1);
+        button.onclick = this.makeEditRow(count - 1, hideColumns);
         container.appendChild(button);
         button = document.createElement('button');
         button.type = 'button';
@@ -129,7 +143,7 @@ export class BossContent extends Content {
         button.appendChild(img);
         button.ariaLabel = 'Delete';
         button.title = 'Delete';
-        button.onclick = this.makeDeleteRow(count - 1);
+        button.onclick = this.makeDeleteRow(count - 1, hideColumns);
         container.appendChild(button);
         cell.appendChild(container);
         row.appendChild(cell);
@@ -162,13 +176,16 @@ export class BossContent extends Content {
         totalsRow.children[index + 3].innerHTML = history.getTrialCount('personal_equip')!.toFixed(2);
     }
 
-    private addCellToRow(row: HTMLTableRowElement, content: string): void {
+    private addCellToRow(row: HTMLTableRowElement, content: string, hide: boolean = false): void {
         let cell = document.createElement('td');
         cell.appendChild(document.createTextNode(content));
+        if (hide) {
+            cell.hidden = true;
+        }
         row.appendChild(cell);
     }
 
-    private makeEditRow(index: number): (ev: Event) => void {
+    private makeEditRow(index: number, hideColumns: boolean[]): (ev: Event) => void {
         return () => {
             if (this.editingRow >= 0) {
                 return;
@@ -183,13 +200,13 @@ export class BossContent extends Content {
             let history = SaveData.getHistory(this.boss, this.difficulty);
 
             this.editingRow = index;
-            let editRow = this.createEditRow(index + 1, history.getEntry(index));
+            let editRow = this.createEditRow(index + 1, hideColumns, history.getEntry(index));
             tableBody.replaceChild(editRow, tableBody.children[index]);
             this.lockControls();
         };
     }
 
-    private makeDeleteRow(index: number): (ev: Event) => Promise<void> {
+    private makeDeleteRow(index: number, hideColumns: boolean[]): (ev: Event) => Promise<void> {
         return async () => {
             if (this.editingRow >= 0) {
                 return;
@@ -211,8 +228,8 @@ export class BossContent extends Content {
                     let row = tableBody.children[k];
                     row.firstElementChild!.innerHTML = (k + 1).toString();
                     let controls = row.lastElementChild!.firstElementChild!;
-                    (controls.firstElementChild as HTMLButtonElement).onclick = this.makeEditRow(k);
-                    (controls.lastElementChild as HTMLButtonElement).onclick = this.makeDeleteRow(k);
+                    (controls.firstElementChild as HTMLButtonElement).onclick = this.makeEditRow(k, hideColumns);
+                    (controls.lastElementChild as HTMLButtonElement).onclick = this.makeDeleteRow(k, hideColumns);
                 }
                 this.unlockControls();
                 this.refreshTotals();
@@ -220,7 +237,7 @@ export class BossContent extends Content {
         };
     }
 
-    private addRow() {
+    private addRow(hideColumns: boolean[]) {
         if (this.editingRow >= 0) {
             return;
         }
@@ -230,12 +247,12 @@ export class BossContent extends Content {
         }
 
         this.editingRow = tableBody.childElementCount;
-        tableBody.appendChild(this.createEditRow(this.editingRow + 1));
+        tableBody.appendChild(this.createEditRow(this.editingRow + 1, hideColumns));
         this.lockControls();
         this.scrollToBottom();
     }
 
-    private createEditRow(count: number, entry?: LootEntry): HTMLTableRowElement {
+    private createEditRow(count: number, hideColumns: boolean[], entry?: LootEntry): HTMLTableRowElement {
         let history = SaveData.getHistory(this.boss, this.difficulty);
         let maxPartySize = getMaxPartySize(this.boss, this.difficulty);
         let row = document.createElement('tr');
@@ -295,6 +312,9 @@ export class BossContent extends Content {
                 inputCell.onclick = this.makeToggleCheck(input);
             }
             inputCell.appendChild(input);
+            if (hideColumns[row.childElementCount]) {
+                inputCell.hidden = true;
+            }
             row.appendChild(inputCell);
         }
 
@@ -366,7 +386,7 @@ export class BossContent extends Content {
         button.appendChild(img);
         button.ariaLabel = 'Save (Enter)';
         button.title = 'Save (Enter)';
-        button.onclick = this.saveRow.bind(this);
+        button.onclick = this.saveRow.bind(this, hideColumns);
         container.appendChild(button);
         button = document.createElement('button');
         button.type = 'button';
@@ -377,21 +397,21 @@ export class BossContent extends Content {
         button.appendChild(img);
         button.ariaLabel = 'Cancel';
         button.title = 'Cancel';
-        button.onclick = this.cancelEditRow.bind(this);
+        button.onclick = this.cancelEditRow.bind(this, hideColumns);
         container.appendChild(button);
         inputCell.appendChild(container);
         row.appendChild(inputCell);
 
         row.onkeydown = (ev: KeyboardEvent) => {
             if (ev.key == 'Enter') {
-                this.saveRow();
+                this.saveRow(hideColumns);
             }
         };
 
         return row;
     }
 
-    private async saveRow() {
+    private async saveRow(hideColumns: boolean[]) {
         if (this.editingRow < 0) {
             return;
         }
@@ -421,14 +441,14 @@ export class BossContent extends Content {
             button.disabled = true;
         }
         await SaveData.save();
-        let newRow = this.createDisplayRow(this.editingRow + 1, newEntry);
+        let newRow = this.createDisplayRow(this.editingRow + 1, newEntry, hideColumns);
         tbody.replaceChild(newRow, editRow);
         this.editingRow = -1;
         this.unlockControls();
         this.refreshTotals();
     }
 
-    private cancelEditRow(): void {
+    private cancelEditRow(hideColumns: boolean[]): void {
         if (this.editingRow < 0) {
             return;
         }
@@ -441,7 +461,7 @@ export class BossContent extends Content {
         if (this.editingRow == history.entryCount()) {
             tbody.removeChild(tbody.children[this.editingRow]);
         } else {
-            let originalRow = this.createDisplayRow(this.editingRow + 1, history.getEntry(this.editingRow));
+            let originalRow = this.createDisplayRow(this.editingRow + 1, history.getEntry(this.editingRow), hideColumns);
             tbody.replaceChild(originalRow, tbody.children[this.editingRow]);
         }
         this.editingRow = -1;

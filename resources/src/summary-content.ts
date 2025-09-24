@@ -60,7 +60,7 @@ export class SummaryContent extends Content {
                 for (difficulty in BossList[bossId].difficulties) {
                     let lootInfo = BossList[bossId].difficulties[difficulty]!.loots[lootSlotId];
                     let history = SaveData.getHistory(bossId, difficulty);
-                    if (lootInfo && history.entryCount() > 0) {
+                    if (lootInfo && history.entryCount() > 0 && (!lootInfo.removed || (!lootSlot.skipTotal && !lootInfo.excludeFromTotal))) {
                         let difficultyName = difficulty[0].toUpperCase() + difficulty.substring(1);
                         let count = history.getTotal(lootSlotId)!;
                         let weight = history.getTrialCount(lootSlotId)!;

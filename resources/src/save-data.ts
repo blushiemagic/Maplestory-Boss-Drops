@@ -47,7 +47,7 @@ export class LootHistory {
         for (let lootSlot of this.getLootSlots()) {
             this.lootTotals.set(lootSlot, 0);
             let releaseDate = lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
-            if (releaseDate) {
+            if (releaseDate || lootSlots[lootSlot]!.removed) {
                 this.trials.set(lootSlot, 0);
             }
         }
@@ -117,8 +117,7 @@ export class LootHistory {
 
         for (let lootSlot of this.getLootSlots()) {
             this.lootTotals.set(lootSlot, this.lootTotals.get(lootSlot)! + entry[lootSlot]!);
-            let releaseDate = this.lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
-            if (releaseDate && entry.date >= ReleaseDates[releaseDate]) {
+            if (this.isLootSlotTrial(lootSlot, entry.date)) {
                 let value: number;
                 if (LootSlots[lootSlot].instanced) {
                     if (LootSlots[lootSlot].ignoreDroprate) {
@@ -158,8 +157,7 @@ export class LootHistory {
 
         for (let lootSlot of this.getLootSlots()) {
             this.lootTotals.set(lootSlot, this.lootTotals.get(lootSlot)! - entry[lootSlot]!);
-            let releaseDate = this.lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
-            if (releaseDate && entry.date >= ReleaseDates[releaseDate]) {
+            if (this.isLootSlotTrial(lootSlot, entry.date)) {
                 let value: number;
                 if (LootSlots[lootSlot].instanced) {
                     if (LootSlots[lootSlot].ignoreDroprate) {
@@ -181,6 +179,15 @@ export class LootHistory {
                 this.trials.set(lootSlot, this.trials.get(lootSlot)! - value);
             }
         }
+    }
+
+    private isLootSlotTrial(lootSlot: LootSlotType, date: Date): boolean {
+        let releaseDate = this.lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
+        let removeDate = this.lootSlots[lootSlot]!.removed;
+        let limitedDates = (releaseDate || removeDate) != undefined;
+        let unreleased = releaseDate && date < ReleaseDates[releaseDate];
+        let removed = removeDate && date >= ReleaseDates[removeDate];
+        return limitedDates && !unreleased && !removed;
     }
 
     private validateEntry(entry: LootEntry): boolean {

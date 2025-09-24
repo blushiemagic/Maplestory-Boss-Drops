@@ -8,7 +8,8 @@ export const ReleaseDates = Object.freeze({
     nickyroid: new Date(2023, 12 - 1, 14),
     milestone: new Date(2024, 11 - 1, 21),
     eternal_box: new Date(2024, 12 - 1, 18),
-    kalos_fan: new Date(2025, 2 - 1, 13)
+    kalos_fan: new Date(2025, 2 - 1, 13),
+    baldrix: new Date(2025, 9 - 1, 24)
 });
 export type ReleaseDate = keyof typeof ReleaseDates;
 
@@ -147,11 +148,24 @@ const lootSlots = Object.freeze({
         skipTotal: true,
         releaseDate: 'new_age'
     }),
+    ring_box_5: Object.freeze({
+        name: 'Life Boss Ring Box',
+        equip: false,
+        instanced: true,
+        skipTotal: true,
+        releaseDate: 'baldrix'
+    }),
     ring_stone: Object.freeze({
         name: 'Grindstone of Life',
         equip: false,
         instanced: false,
         releaseDate: 'new_age'
+    }),
+    ring_stone_2: Object.freeze({
+        name: 'Grindstone of Faith',
+        equip: false,
+        instanced: false,
+        releaseDate: 'baldrix'
     }),
     pitched_upgrade: Object.freeze({
         name: 'Exceptional Hammer',
@@ -175,6 +189,7 @@ export interface LootInfo {
     readonly excludeFromTotal?: boolean;
     readonly releaseDateOverride?: ReleaseDate;
     readonly summaryClarifier?: string;
+    readonly removed?: ReleaseDate;
 }
 
 export interface Boss {
