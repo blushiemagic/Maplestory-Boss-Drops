@@ -562,6 +562,28 @@ const bossList = Object.freeze({
                 })
             })
         })
+    }),
+    baldrix: Object.freeze({
+        name: 'Baldrix',
+        maxPartySize: 3,
+        difficulties: Object.freeze({
+            normal: Object.freeze({
+                loots: Object.freeze({
+                    android_shared: Object.freeze({ nameOverride: 'Baldrixroid' }),
+                    ring_box_5: Object.freeze({}),
+                    ring_stone_2: Object.freeze({})
+                })
+            }),
+            hard: Object.freeze({
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Eternal Armor of Oaths Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Baldrixroid' }),
+                    brilliant: Object.freeze({ nameOverride: 'Oath of Death' }),
+                    ring_box_5: Object.freeze({}),
+                    ring_stone_2: Object.freeze({})
+                })
+            })
+        })
     })
 });
 export type BossType = keyof typeof bossList;
