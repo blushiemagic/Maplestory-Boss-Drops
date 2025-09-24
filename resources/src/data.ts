@@ -159,12 +159,14 @@ const lootSlots = Object.freeze({
         name: 'Grindstone of Life',
         equip: false,
         instanced: false,
+        skipTotal: true,
         releaseDate: 'new_age'
     }),
     ring_stone_2: Object.freeze({
         name: 'Grindstone of Faith',
         equip: false,
         instanced: false,
+        skipTotal: true,
         releaseDate: 'baldrix'
     }),
     pitched_upgrade: Object.freeze({
@@ -459,7 +461,7 @@ const bossList = Object.freeze({
             easy: Object.freeze({
                 loots: Object.freeze({
                     ring_box_4: Object.freeze({}),
-                    ring_stone: Object.freeze({})
+                    ring_stone: Object.freeze({ removed: 'baldrix' })
                 })
             }),
             normal: Object.freeze({
@@ -480,7 +482,8 @@ const bossList = Object.freeze({
                         nameOverride: 'Nickyroid',
                         releaseDateOverride: 'nickyroid'
                     }),
-                    ring_box_4: Object.freeze({}),
+                    ring_box_4: Object.freeze({ removed: 'baldrix' }),
+                    ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
                     ring_stone: Object.freeze({})
                 })
             }),
@@ -491,7 +494,8 @@ const bossList = Object.freeze({
                         nameOverride: 'Nickyroid',
                         releaseDateOverride: 'nickyroid'
                     }),
-                    ring_box_4: Object.freeze({}),
+                    ring_box_4: Object.freeze({ removed: 'baldrix' }),
+                    ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
                     ring_stone: Object.freeze({}),
                     pitched_upgrade: Object.freeze({})
                 })
@@ -504,7 +508,7 @@ const bossList = Object.freeze({
             easy: Object.freeze({
                 loots: Object.freeze({
                     ring_box_4: Object.freeze({}),
-                    ring_stone: Object.freeze({})
+                    ring_stone: Object.freeze({ removed: 'baldrix' })
                 })
             }),
             normal: Object.freeze({
@@ -518,7 +522,8 @@ const bossList = Object.freeze({
                 loots: Object.freeze({
                     eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
                     android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
-                    ring_box_4: Object.freeze({}),
+                    ring_box_4: Object.freeze({ removed: 'baldrix' }),
+                    ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
                     ring_stone: Object.freeze({})
                 })
             }),
@@ -526,7 +531,8 @@ const bossList = Object.freeze({
                 loots: Object.freeze({
                     eternal_armor: Object.freeze({ nameOverride: 'Ferocious Beast Eternal Armor Box' }),
                     android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
-                    ring_box_4: Object.freeze({}),
+                    ring_box_4: Object.freeze({ removed: 'baldrix' }),
+                    ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
                     ring_stone: Object.freeze({}),
                     pitched_upgrade: Object.freeze({})
                 })
@@ -540,7 +546,9 @@ const bossList = Object.freeze({
             normal: Object.freeze({
                 loots: Object.freeze({
                     android_shared: Object.freeze({ nameOverride: 'Limboroid' }),
-                    ring_box_4: Object.freeze({})
+                    ring_box_4: Object.freeze({ removed: 'baldrix' }),
+                    ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
+                    ring_stone_2: Object.freeze({})
                 })
             }),
             hard: Object.freeze({
@@ -548,7 +556,9 @@ const bossList = Object.freeze({
                     eternal_armor: Object.freeze({ nameOverride: 'Eternal Armor of Desire Box' }),
                     android_shared: Object.freeze({ nameOverride: 'Limboroid' }),
                     brilliant: Object.freeze({ nameOverride: 'Whisper of the Source' }),
-                    ring_box_4: Object.freeze({})
+                    ring_box_4: Object.freeze({ removed: 'baldrix' }),
+                    ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
+                    ring_stone_2: Object.freeze({})
                 })
             })
         })
