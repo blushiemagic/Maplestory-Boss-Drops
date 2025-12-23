@@ -18,7 +18,9 @@ export function dateToString(date: Date): string {
 }
 
 export function parseDate(date: string): Date {
-    return new Date(date);
+    let result = new Date(date);
+    result.setMinutes(result.getMinutes() + result.getTimezoneOffset());
+    return result;
 }
 
 export function getMaxDroprate(date: Date): number {
@@ -184,6 +186,39 @@ const lootSlots = Object.freeze({
 });
 export type LootSlotType = keyof typeof lootSlots;
 export const LootSlots: Readonly<Record<LootSlotType, LootSlot>> = lootSlots;
+
+export interface Modifier {
+    readonly lootSlots: Set<LootSlotType>;
+    readonly multiplier: number;
+    readonly startDate?: Date;
+    readonly endDate?: Date;
+}
+
+export const Modifiers = Object.freeze({
+    arcane_nerf: Object.freeze({
+        lootSlots: new Set<LootSlotType>([
+            'abso_weapon',
+            'abso_armor',
+            'arcane_weapon',
+            'arcane_armor'
+        ]),
+        multiplier: 0.5,
+        startDate: new Date(2025, 11 - 1, 13),
+        endDate: new Date(2025, 12 - 1, 23)
+    }),
+    arcane_buff: Object.freeze({
+        lootSlots: new Set<LootSlotType>([
+            'abso_weapon',
+            'abso_armor',
+            'arcane_weapon',
+            'arcane_armor'
+        ]),
+        multiplier: 1.5,
+        startDate: new Date(2025, 12 - 1, 23),
+        endDate: new Date(2026, 2 - 1, 5)
+    })
+});
+export type ModifierName = keyof typeof Modifiers;
 
 export interface LootInfo {
     readonly nameOverride?: string;

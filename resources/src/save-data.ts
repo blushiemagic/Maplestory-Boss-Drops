@@ -6,6 +6,8 @@ import {
     LootInfo,
     LootSlots,
     LootSlotType,
+    ModifierName,
+    Modifiers,
     ReleaseDates,
     dateToString,
     getMaxDroprate,
@@ -46,8 +48,7 @@ export class LootHistory {
         this.trials.set('personal_equip', 0);
         for (let lootSlot of this.getLootSlots()) {
             this.lootTotals.set(lootSlot, 0);
-            let releaseDate = lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
-            if (releaseDate || lootSlots[lootSlot]!.removed) {
+            if (this.lootSlotNeedsTrial(lootSlot)) {
                 this.trials.set(lootSlot, 0);
             }
         }
@@ -136,6 +137,7 @@ export class LootHistory {
                         value = drop;
                     }
                 }
+                value *= this.getLootSlotModifier(lootSlot, entry.date);
                 this.trials.set(lootSlot, this.trials.get(lootSlot)! + value);
             }
         }
@@ -176,18 +178,48 @@ export class LootHistory {
                         value = drop;
                     }
                 }
+                value *= this.getLootSlotModifier(lootSlot, entry.date);
                 this.trials.set(lootSlot, this.trials.get(lootSlot)! - value);
             }
         }
     }
 
-    private isLootSlotTrial(lootSlot: LootSlotType, date: Date): boolean {
+    private lootSlotNeedsTrial(lootSlot: LootSlotType): boolean {
+        let modifierName: ModifierName;
+        for (modifierName in Modifiers) {
+            if (Modifiers[modifierName].lootSlots.has(lootSlot)) {
+                return true;
+            }
+        }
         let releaseDate = this.lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
         let removeDate = this.lootSlots[lootSlot]!.removed;
-        let limitedDates = (releaseDate || removeDate) != undefined;
+        return (releaseDate || removeDate) != undefined;
+    }
+
+    private isLootSlotTrial(lootSlot: LootSlotType, date: Date): boolean {
+        if (!this.lootSlotNeedsTrial(lootSlot)) {
+            return false;
+        }
+        let releaseDate = this.lootSlots[lootSlot]!.releaseDateOverride ?? LootSlots[lootSlot].releaseDate;
+        let removeDate = this.lootSlots[lootSlot]!.removed;
         let unreleased = releaseDate && date < ReleaseDates[releaseDate];
         let removed = removeDate && date >= ReleaseDates[removeDate];
-        return limitedDates && !unreleased && !removed;
+        return !unreleased && !removed;
+    }
+
+    private getLootSlotModifier(lootSlot: LootSlotType, date: Date): number {
+        let multiplier = 1;
+        let modifierName: ModifierName;
+        for (modifierName in Modifiers) {
+            let modifier = Modifiers[modifierName];
+            if (modifier.lootSlots.has(lootSlot) &&
+                (!modifier.startDate || date >= modifier.startDate) &&
+                (!modifier.endDate || date < modifier.endDate)
+            ) {
+                multiplier *= modifier.multiplier;
+            }
+        }
+        return multiplier;
     }
 
     private validateEntry(entry: LootEntry): boolean {
