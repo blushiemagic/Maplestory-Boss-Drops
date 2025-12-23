@@ -9,7 +9,8 @@ export const ReleaseDates = Object.freeze({
     milestone: new Date(2024, 11 - 1, 21),
     eternal_box: new Date(2024, 12 - 1, 18),
     kalos_fan: new Date(2025, 2 - 1, 13),
-    baldrix: new Date(2025, 9 - 1, 24)
+    baldrix: new Date(2025, 9 - 1, 24),
+    grandis_nerf: new Date(2025, 12 - 1, 18)
 });
 export type ReleaseDate = keyof typeof ReleaseDates;
 
@@ -537,6 +538,43 @@ const bossList = Object.freeze({
             })
         })
     }),
+    first_adversary: Object.freeze({
+        name: 'First Adversary',
+        maxPartySize: 3,
+        difficulties: Object.freeze({
+            easy: Object.freeze({
+                loots: Object.freeze({
+                    ring_box_4: Object.freeze({})
+                })
+            }),
+            normal: Object.freeze({
+                loots: Object.freeze({
+                    android_shared: Object.freeze({ nameOverride: 'Adversaryroid' }),
+                    ring_box_4: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
+            }),
+            hard: Object.freeze({
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Ancient Eternal Armor Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Adversaryroid' }),
+                    brilliant: Object.freeze({ nameOverride: 'Immortal Legacy' }),
+                    ring_box_5: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
+            }),
+            extreme: Object.freeze({
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Ancient Eternal Armor Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Adversaryroid' }),
+                    brilliant: Object.freeze({ nameOverride: 'Immortal Legacy' }),
+                    ring_box_5: Object.freeze({}),
+                    ring_stone: Object.freeze({}),
+                    pitched_upgrade: Object.freeze({})
+                })
+            })
+        })
+    }),
     kaling: Object.freeze({
         name: 'Kaling',
         difficulties: Object.freeze({
@@ -559,7 +597,8 @@ const bossList = Object.freeze({
                     android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
                     ring_box_4: Object.freeze({ removed: 'baldrix' }),
                     ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
-                    ring_stone: Object.freeze({})
+                    ring_stone: Object.freeze({ removed: 'grandis_nerf' }),
+                    ring_stone_2: Object.freeze({ releaseDateOverride: 'grandis_nerf' })
                 })
             }),
             extreme: Object.freeze({
@@ -568,7 +607,8 @@ const bossList = Object.freeze({
                     android_shared: Object.freeze({ nameOverride: 'Kalingroid' }),
                     ring_box_4: Object.freeze({ removed: 'baldrix' }),
                     ring_box_5: Object.freeze({ releaseDateOverride: 'baldrix' }),
-                    ring_stone: Object.freeze({}),
+                    ring_stone: Object.freeze({ removed: 'grandis_nerf' }),
+                    ring_stone_2: Object.freeze({ releaseDateOverride: 'grandis_nerf' }),
                     pitched_upgrade: Object.freeze({})
                 })
             })
