@@ -254,6 +254,19 @@ button.difficulty.extreme:hover {
     font-weight: bold;
 }
 
+.date-filters {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.date-filters label {
+    font-weight: bold;
+}
+
+.date-filters input {
+    margin-right: 2em;
+}
+
 .loot-card {
     display: inline-flex;
     flex-direction: column;

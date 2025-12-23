@@ -17,6 +17,45 @@ export class SummaryContent extends Content {
         note.appendChild(document.createTextNode(' are not included in the totals.'));
         summaryContent.appendChild(note);
 
+        let dateFilters = document.createElement('div');
+        dateFilters.classList.add('date-filters');
+        let label = document.createElement('label');
+        label.appendChild(document.createTextNode('Start Date: '));
+        label.htmlFor = 'start-date';
+        dateFilters.appendChild(label);
+        let dateInput = document.createElement('input');
+        dateInput.type = 'date';
+        dateInput.id = 'start-date';
+        dateInput.onchange = this.recalculate.bind(this, summaryContent);
+        dateFilters.appendChild(dateInput);
+        label = document.createElement('label');
+        label.htmlFor = 'end-date';
+        label.appendChild(document.createTextNode('End Date: '));
+        dateFilters.appendChild(label);
+        dateInput = document.createElement('input');
+        dateInput.type = 'date';
+        dateInput.id = 'end-date';
+        dateInput.onchange = this.recalculate.bind(this, summaryContent);
+        dateFilters.appendChild(dateInput);
+        summaryContent.appendChild(dateFilters);
+
+        summaryContent.appendChild(this.getLootSlotCards());
+
+        return summaryContent;
+    }
+
+    getLootSlotCards() {
+        let startDate = (document.getElementById('start-date') as HTMLInputElement)?.valueAsDate;
+        let endDate = (document.getElementById('end-date') as HTMLInputElement)?.valueAsDate;
+        if (!startDate || isNaN(startDate.getTime())) {
+            startDate = null;
+        }
+        if (!endDate || isNaN(endDate.getTime())) {
+            endDate = null;
+        }
+
+        let lootSlotCards = document.createElement('div');
+        lootSlotCards.id = 'loot-card-list';
         let lootSlotId: LootSlotType;
         for (lootSlotId in LootSlots) {
             let lootSlot: LootSlot = LootSlots[lootSlotId];
@@ -60,6 +99,9 @@ export class SummaryContent extends Content {
                 for (difficulty in BossList[bossId].difficulties) {
                     let lootInfo = BossList[bossId].difficulties[difficulty]!.loots[lootSlotId];
                     let history = SaveData.getHistory(bossId, difficulty);
+                    if (startDate || endDate) {
+                        history = history.createSubHistory(startDate, endDate);
+                    }
                     if (lootInfo && history.entryCount() > 0 && (!lootInfo.removed || (!lootSlot.skipTotal && !lootInfo.excludeFromTotal))) {
                         let difficultyName = difficulty[0].toUpperCase() + difficulty.substring(1);
                         let count = history.getTotal(lootSlotId)!;
@@ -127,10 +169,17 @@ export class SummaryContent extends Content {
             }
 
             lootSlotCard.appendChild(lootSlotTable);
-            summaryContent.appendChild(lootSlotCard);
+            lootSlotCards.appendChild(lootSlotCard);
         }
+        return lootSlotCards;
+    }
 
-        return summaryContent;
+    recalculate(content: HTMLElement): void {
+        let lootSlotCards = document.getElementById('loot-card-list');
+        if (lootSlotCards) {
+            content.removeChild(lootSlotCards);
+        }
+        content.appendChild(this.getLootSlotCards());
     }
 
     getFooter(): string | Promise<string> | HTMLElement {

@@ -282,6 +282,16 @@ export class LootHistory {
     getInvalidEntries(): Iterable<string> {
         return this.invalidEntries;
     }
+
+    createSubHistory(start: Date | null, end: Date | null) {
+        let sub = new LootHistory(this.lootSlots);
+        for (let entry of this.getEntries()) {
+            if ((start == null || entry.date >= start) && (end == null || entry.date < end)) {
+                sub.addEntry(entry);
+            }
+        }
+        return sub;
+    }
 }
 
 function makeNewHistories(): Readonly<Record<BossType, Data<Difficulty, LootHistory>>> {
