@@ -15,13 +15,21 @@ export const ReleaseDates = Object.freeze({
 export type ReleaseDate = keyof typeof ReleaseDates;
 
 export function dateToString(date: Date): string {
-    return date.toISOString().substring(0, 10);
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    return year + '-' + month + '-' + day;
 }
 
 export function parseDate(date: string): Date {
-    let result = new Date(date);
-    result.setMinutes(result.getMinutes() + result.getTimezoneOffset());
-    return result;
+    if (!date) {
+        return new Date(NaN);
+    }
+    let split = date.split('-').map(value => parseInt(value));
+    if (split.length != 3) {
+        return new Date(NaN);
+    }
+    return new Date(split[0], split[1] - 1, split[2]);
 }
 
 export function getMaxDroprate(date: Date): number {

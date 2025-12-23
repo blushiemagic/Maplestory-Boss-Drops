@@ -1,5 +1,5 @@
 import { Content, ContentManager } from './content.js';
-import { BossList, BossType, Difficulty, LootSlots, getMaxPartySize } from './data.js';
+import { BossList, BossType, Difficulty, LootSlots, getMaxPartySize, parseDate } from './data.js';
 import { MainContent } from './main-content.js';
 import { LootEntry, SaveData } from './save-data.js';
 
@@ -107,9 +107,9 @@ export class BossContent extends Content {
         let row = document.createElement('tr');
 
         this.addCellToRow(row, count.toString());
-        let month = entry.date.getUTCMonth() + 1;
-        let date = entry.date.getUTCDate();
-        let year = entry.date.getUTCFullYear();
+        let month = entry.date.getMonth() + 1;
+        let date = entry.date.getDate();
+        let year = entry.date.getFullYear();
         this.addCellToRow(row, month + '/' + date + '/' + year);
         this.addCellToRow(row, entry.clearSize.toString());
         for (let lootSlot of history.getLootSlots()) {
@@ -475,8 +475,8 @@ export class BossContent extends Content {
         let row = document.querySelector('.data-table tbody')!.children[this.editingRow];
         let history = SaveData.getHistory(this.boss, this.difficulty);
 
-        let date = this.getInputChildByName(row, 'date')!.valueAsDate;
-        if (date == null || isNaN(date.getTime())) {
+        let date = parseDate(this.getInputChildByName(row, 'date')!.value);
+        if (isNaN(date.getTime())) {
             throw Error('Must input valid date');
         }
 

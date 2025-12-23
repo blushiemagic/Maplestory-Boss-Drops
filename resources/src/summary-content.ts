@@ -1,5 +1,5 @@
 import { Content, ContentManager } from "./content.js";
-import { BossList, BossType, Difficulty, LootSlot, LootSlotType, LootSlots } from "./data.js";
+import { BossList, BossType, Difficulty, LootSlot, LootSlotType, LootSlots, parseDate } from "./data.js";
 import { MainContent } from "./main-content.js";
 import { SaveData } from "./save-data.js";
 
@@ -45,12 +45,12 @@ export class SummaryContent extends Content {
     }
 
     getLootSlotCards() {
-        let startDate = (document.getElementById('start-date') as HTMLInputElement)?.valueAsDate;
-        let endDate = (document.getElementById('end-date') as HTMLInputElement)?.valueAsDate;
-        if (!startDate || isNaN(startDate.getTime())) {
+        let startDate: Date | null = parseDate((document.getElementById('start-date') as HTMLInputElement)?.value);
+        let endDate: Date | null = parseDate((document.getElementById('end-date') as HTMLInputElement)?.value);
+        if (isNaN(startDate.getTime())) {
             startDate = null;
         }
-        if (!endDate || isNaN(endDate.getTime())) {
+        if (isNaN(endDate.getTime())) {
             endDate = null;
         }
 
