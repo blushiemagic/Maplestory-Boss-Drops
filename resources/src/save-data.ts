@@ -28,7 +28,7 @@ export interface LootEntry extends Partial<Record<LootSlotType, number>> {
 
 const maxDrop: number[] = [ 400, 500 ];
 
-type TrialType = 'clears' | 'drop' | 'equip' | 'personal' | 'personal_equip' | LootSlotType;
+type TrialType = 'adjusted' | 'clears' | 'clears_adjusted' | 'drop' | 'equip' | 'personal' | 'personal_equip' | LootSlotType;
 
 export class LootHistory {
     private lootSlots: Data<LootSlotType, LootInfo>;
@@ -41,7 +41,9 @@ export class LootHistory {
 
     constructor(lootSlots: Data<LootSlotType, LootInfo>) {
         this.lootSlots = lootSlots;
+        this.trials.set('adjusted', 0);
         this.trials.set('clears', 0);
+        this.trials.set('clears_adjusted', 0);
         this.trials.set('drop', 0);
         this.trials.set('equip', 0);
         this.trials.set('personal', 0);
@@ -104,84 +106,74 @@ export class LootHistory {
     }
 
     private addEntryToTotals(entry: LootEntry): void {
-        let maxDrop = getMaxDroprate(entry.date);
-        let drop = 1 + Math.min(entry.drop, maxDrop) / 100;
-        let equip = 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100;
-        let personal = 1 + Math.min(entry.personalDrop, maxDrop) / 100;
-        let personalEquip = 1 + Math.min(entry.personalDrop + entry.personalGreed, maxDrop) / 100;
-
-        this.trials.set('clears', this.trials.get('clears')! + entry.clearSize);
-        this.trials.set('drop', this.trials.get('drop')! + drop);
-        this.trials.set('equip', this.trials.get('equip')! + equip);
-        this.trials.set('personal', this.trials.get('personal')! + personal);
-        this.trials.set('personal_equip', this.trials.get('personal_equip')! + personalEquip);
-
+        let delta = this.getEntryDelta(entry);
+        for (let key of delta.keys()) {
+            this.trials.set(key, this.trials.get(key)! + delta.get(key)!);
+        }
         for (let lootSlot of this.getLootSlots()) {
             this.lootTotals.set(lootSlot, this.lootTotals.get(lootSlot)! + entry[lootSlot]!);
-            if (this.isLootSlotTrial(lootSlot, entry.date)) {
-                let value: number;
-                if (LootSlots[lootSlot].instanced) {
-                    if (LootSlots[lootSlot].ignoreDroprate) {
-                        value = entry.clearSize;
-                    } else if (LootSlots[lootSlot].equip && !this.lootSlots[lootSlot]!.noEquip) {
-                        value = personalEquip;
-                    } else {
-                        value = personal;
-                    }
-                } else {
-                    if (LootSlots[lootSlot].ignoreDroprate) {
-                        value = 1;
-                    } else if (LootSlots[lootSlot].equip && !this.lootSlots[lootSlot]!.noEquip) {
-                        value = equip;
-                    } else {
-                        value = drop;
-                    }
-                }
-                value *= this.getLootSlotModifier(lootSlot, entry.date);
-                this.trials.set(lootSlot, this.trials.get(lootSlot)! + value);
-            }
         }
     }
 
     private removeEntryFromTotals(index: number): void {
         let entry: LootEntry = this.entries[index];
-        let maxDrop = getMaxDroprate(entry.date);
-        let drop = 1 + Math.min(entry.drop, maxDrop) / 100;
-        let equip = 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100;
-        let personal = 1 + Math.min(entry.personalDrop, maxDrop) / 100;
-        let personalEquip = 1 + Math.min(entry.personalDrop + entry.personalGreed, maxDrop) / 100;
-
-        this.trials.set('clears', this.trials.get('clears')! - entry.clearSize);
-        this.trials.set('drop', this.trials.get('drop')! - drop);
-        this.trials.set('equip', this.trials.get('equip')! - equip);
-        this.trials.set('personal', this.trials.get('personal')! - personal);
-        this.trials.set('personal_equip', this.trials.get('personal_equip')! - personalEquip);
-
+        let delta = this.getEntryDelta(entry);
+        for (let key of delta.keys()) {
+            this.trials.set(key, this.trials.get(key)! - delta.get(key)!);
+        }
         for (let lootSlot of this.getLootSlots()) {
             this.lootTotals.set(lootSlot, this.lootTotals.get(lootSlot)! - entry[lootSlot]!);
+        }
+    }
+
+    private getEntryDelta(entry: LootEntry): Map<TrialType, number> {
+        let maxDrop = getMaxDroprate(entry.date);
+        let multiplier = entry.date < ReleaseDates.crown ? 1.164 : 1;
+        let bonus = entry.date >= ReleaseDates.crown ? 0.24 : 0;
+        let delta = new Map<TrialType, number>();
+
+        delta.set('drop', 1 + Math.min(entry.drop, maxDrop) / 100);
+        delta.set('equip', 1 + Math.min(entry.drop + entry.greed, maxDrop) / 100)
+        delta.set('personal', 1 + Math.min(entry.personalDrop, maxDrop) / 100)
+        delta.set('personal_equip', 1 + Math.min(entry.personalDrop + entry.personalGreed, maxDrop) / 100);
+        for (let key of delta.keys()) {
+            delta.set(key, delta.get(key)! + bonus);
+        }
+
+        delta.set('adjusted', 1);
+        delta.set('clears_adjusted', entry.clearSize);
+        for (let key of delta.keys()) {
+            delta.set(key, delta.get(key)! * multiplier);
+        }
+
+        delta.set('clears', entry.clearSize);
+
+        for (let lootSlot of this.getLootSlots()) {
             if (this.isLootSlotTrial(lootSlot, entry.date)) {
-                let value: number;
+                let trialType: TrialType;
                 if (LootSlots[lootSlot].instanced) {
                     if (LootSlots[lootSlot].ignoreDroprate) {
-                        value = entry.clearSize;
+                        trialType = 'clears_adjusted';
                     } else if (LootSlots[lootSlot].equip && !this.lootSlots[lootSlot]!.noEquip) {
-                        value = personalEquip;
+                        trialType = 'personal_equip';
                     } else {
-                        value = personal;
+                        trialType = 'personal';
                     }
                 } else {
                     if (LootSlots[lootSlot].ignoreDroprate) {
-                        value = 1;
+                        trialType = 'adjusted';
                     } else if (LootSlots[lootSlot].equip && !this.lootSlots[lootSlot]!.noEquip) {
-                        value = equip;
+                        trialType = 'equip';
                     } else {
-                        value = drop;
+                        trialType = 'drop';
                     }
                 }
-                value *= this.getLootSlotModifier(lootSlot, entry.date);
-                this.trials.set(lootSlot, this.trials.get(lootSlot)! - value);
+                let value = delta.get(trialType)!;
+                delta.set(lootSlot, value * this.getLootSlotModifier(lootSlot, entry.date));
             }
         }
+
+        return delta;
     }
 
     private lootSlotNeedsTrial(lootSlot: LootSlotType): boolean {
@@ -245,7 +237,7 @@ export class LootHistory {
             let lootInfo = this.lootSlots[lootSlot]!;
             if (LootSlots[lootSlot].instanced) {
                 if (LootSlots[lootSlot].ignoreDroprate) {
-                    return this.trials.get('clears');
+                    return this.trials.get('clears_adjusted');
                 } else if (LootSlots[lootSlot].equip && !lootInfo.noEquip) {
                     return this.trials.get('personal_equip');
                 } else {
@@ -253,7 +245,7 @@ export class LootHistory {
                 }
             } else {
                 if (LootSlots[lootSlot].ignoreDroprate) {
-                    return this.entryCount();
+                    return this.trials.get('adjusted');
                 } else if (LootSlots[lootSlot].equip && !lootInfo.noEquip) {
                     return this.trials.get('equip');
                 } else {

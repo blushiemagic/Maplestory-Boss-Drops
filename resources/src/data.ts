@@ -10,7 +10,8 @@ export const ReleaseDates = Object.freeze({
     eternal_box: new Date(2024, 12 - 1, 18),
     kalos_fan: new Date(2025, 2 - 1, 13),
     baldrix: new Date(2025, 9 - 1, 24),
-    grandis_nerf: new Date(2025, 12 - 1, 18)
+    grandis_nerf: new Date(2025, 12 - 1, 18),
+    crown: new Date(2026, 6 - 1, 18)
 });
 export type ReleaseDate = keyof typeof ReleaseDates;
 
