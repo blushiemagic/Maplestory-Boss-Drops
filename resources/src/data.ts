@@ -623,6 +623,28 @@ const bossList = Object.freeze({
             })
         })
     }),
+    malefic_star: Object.freeze({
+        name: 'Malefic Star',
+        maxPartySize: 3,
+        difficulties: Object.freeze({
+            normal: Object.freeze({
+                loots: Object.freeze({
+                    android_shared: Object.freeze({ nameOverride: 'Maleficroid' }),
+                    ring_box_5: Object.freeze({}),
+                    ring_stone: Object.freeze({})
+                })
+            }),
+            hard: Object.freeze({
+                loots: Object.freeze({
+                    eternal_armor: Object.freeze({ nameOverride: 'Eternal Armor of Radiance Box' }),
+                    android_shared: Object.freeze({ nameOverride: 'Maleficroid' }),
+                    brilliant: Object.freeze({ nameOverride: 'Blissful Nightmare' }),
+                    ring_box_5: Object.freeze({}),
+                    ring_stone_2: Object.freeze({})
+                })
+            })
+        })
+    }),
     limbo: Object.freeze({
         name: 'Limbo',
         maxPartySize: 3,
